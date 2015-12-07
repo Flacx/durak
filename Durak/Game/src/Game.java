@@ -5,20 +5,20 @@ import java.util.Stack;
 
 public class Game {
 
-    private Player[] players;
+	private Player[] players;
 
-    private char trumpColor;
-    private Card trumpCard;
-    // private Card[] staple;
-    private Card[] attackingCards;
-    private Card[] coverCards;
-    private Stack<Card> staple;
+	private char trumpColor;
+	private Card trumpCard;
+	// private Card[] staple;
+	private Card[] attackingCards;
+	private Card[] coverCards;
+	private Stack<Card> staple;
 
-    private Random random;
-    private int currentPlayer;
-    private boolean gameOver;
+	private Random random;
+	private int currentPlayer;
+	private boolean gameOver;
 
-    public Game(int playerCount) {
+	public Game(int playerCount) {
         gameOver = false;
         if (playerCount >= 2 && playerCount < 6) {
             random = new Random();
@@ -60,7 +60,10 @@ public class Game {
                 for (int i = 0; i < 5; i++) {
                     startCards[i] = staple.pop();
                 }
-                p = new Player(startCards[0], startCards[1], startCards[2], startCards[3], startCards[4]);
+                ArrayList<Card> hand = new ArrayList<Card>;
+                for(int i = 0, i<startCard.length, i++)
+                	hand.add(startCard[i]);
+                p = new Player(hand);
             }
 
             // trumpcard wird von stack genommen und der ganze wird auf nen anderen geshiftet. trump drqauf und zurueck geschiftet
@@ -86,44 +89,45 @@ public class Game {
 
     }
 
-    public void startGame(int startPlayer) {
-        currentPlayer = startPlayer;
-        while (!gameOver) {
-            currentPlayer = executeAttack(currentPlayer);
-        }
-    }
+	public void startGame(int startPlayer) {
+		currentPlayer = startPlayer;
+		while (!gameOver) {
+			currentPlayer = executeAttack(currentPlayer);
+		}
+	}
 
-    public void printCards(int player) {
-        for (int i = 0; i < 5; i++) {
-            System.out.println((i+1) + ") " + players[player].getHand()[i]);
-        }
-    }
+	public void printCards(int player) {
+		for (int i = 0; i < 5; i++) {
+			System.out.println((i + 1) + ") " + players[player].getHand()[i]);
+		}
+	}
 
-    public void flushTable() {
-        for (Card c : attackingCards) {
-            c = null;
-        }
-        for (Card d : coverCards) {
-            d = null;
-        }
-    }
-    public void printTable() {
-        for (Card c : attackingCards) {
-            if (c != null) {
-                System.out.print(c.getColor() + c.getNumber() + " ");
-            }
-        }
-        System.out.println();
+	public void flushTable() {
+		for (Card c : attackingCards) {
+			c = null;
+		}
+		for (Card d : coverCards) {
+			d = null;
+		}
+	}
 
-        for (Card d : coverCards) {
-            if (d != null) {
-                System.out.print(d.getColor() + d.getNumber() + " ");
-            }
-        }
-        System.out.println();
-    }
+	public void printTable() {
+		for (Card c : attackingCards) {
+			if (c != null) {
+				System.out.print(c.getColor() + c.getNumber() + " ");
+			}
+		}
+		System.out.println();
 
-    public int executeAttack(int attackingPlayer, boolean shifted) {
+		for (Card d : coverCards) {
+			if (d != null) {
+				System.out.print(d.getColor() + d.getNumber() + " ");
+			}
+		}
+		System.out.println();
+	}
+
+	public int executeAttack(int attackingPlayer, boolean shifted) {
         int attackedPlayer = 0;
         if (attackingPlayer == players.length-1) {
             attackedPlayer = 0;
