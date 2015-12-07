@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.Scanner;
@@ -30,7 +31,7 @@ public class Game {
             attackingCards = new Card[5];
             coverCards = new Card[5];
 
-            // Stapel wird gefüllt
+            // Stapel wird gefuelllt
             for (int i = 0; i < 4; i++) {
                 for (int j = 7; j < 14; j++) {
                     if (i == 0) {
@@ -48,7 +49,7 @@ public class Game {
                     break;
                 }
             }
-
+          
 
             // STapel wird gemischt
             Collections.shuffle(staple, random);
@@ -60,10 +61,14 @@ public class Game {
                 for (int i = 0; i < 5; i++) {
                     startCards[i] = staple.pop();
                 }
-                ArrayList<Card> hand = new ArrayList<Card>;
-                for(int i = 0, i<startCard.length, i++)
-                	hand.add(startCard[i]);
+                
+                ArrayList<Card> hand = new ArrayList<Card>();
+                for (Card card : startCards) {
+                	hand.add(card);
+                }
+                
                 p = new Player(hand);
+                
             }
 
             // trumpcard wird von stack genommen und der ganze wird auf nen anderen geshiftet. trump drqauf und zurueck geschiftet
@@ -80,7 +85,7 @@ public class Game {
             }
 
 
-            // Welcher Spieler anfängt muss noch implementiert werden.
+            // Welcher Spieler anfaengt muss noch implementiert werden.
             startGame(0);
         } else {
             System.out.println("Too few or too many players. (2-5)");
@@ -92,13 +97,13 @@ public class Game {
 	public void startGame(int startPlayer) {
 		currentPlayer = startPlayer;
 		while (!gameOver) {
-			currentPlayer = executeAttack(currentPlayer);
+			currentPlayer = executeAttack(currentPlayer, false);
 		}
 	}
 
 	public void printCards(int player) {
 		for (int i = 0; i < 5; i++) {
-			System.out.println((i + 1) + ") " + players[player].getHand()[i]);
+			System.out.println((i + 1) + ") " + players[player].getHand().get(i));
 		}
 	}
 
@@ -211,7 +216,7 @@ public class Game {
                         if (d.equals("s")) {
                             nextPlayer = executeAttack(attackedPlayer, true);
                         } else if (d.equals("l")) {
-                            attackingCards[attackingIndex+1] =
+                            attackingCards[attackingIndex+1] = players[attackingPlayer].getHand().get(answer);
                         } else {
                             // Nur vorzeigen
 
