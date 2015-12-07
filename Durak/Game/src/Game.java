@@ -216,7 +216,7 @@ public class Game {
                         if (d.equals("s")) {
                             nextPlayer = executeAttack(attackedPlayer, true);
                         } else if (d.equals("l")) {
-                            attackingCards[attackingIndex+1] = players[attackingPlayer].getHand().get(answer);
+                            attackingCards[attackingIndex+1] = (Card) players[attackingPlayer].getHand().get(answerCard);
                         } else {
                             // Nur vorzeigen
 
