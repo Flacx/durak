@@ -3,12 +3,8 @@ import java.util.ArrayList;
 public class Player {
 
     private ArrayList<Card> hand;
-    public Player(Card c1, Card c2, Card c3, Card c4, Card c5) {
-        hand.add(c1);
-        hand.add(c2);
-        hand.add(c3);
-        hand.add(c4);
-        hand.add(c5);
+    public Player(ArrayList<Card> hand) {
+        this.hand = hand;
     }
 
     public ArrayList getHand() {
