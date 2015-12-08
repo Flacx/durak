@@ -1,4 +1,5 @@
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 //Controller Klasse, wird nacher die Hauptklasse
 public class Durak implements ActionListener {
 	Game g;
@@ -6,12 +7,13 @@ public class Durak implements ActionListener {
 	public void main(String[] args) {
 		new Durak();
 	}
-	
-	public void ActionPerformed(ActionEvent ae) {
-		if(ae.equals("GAME_START"))
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		if(arg0.equals("GAME_START"))
 		{
 			g = new Game(0); //Wenn GUI fertig ist, kommt bei 0 ein Getter hin
 		}
-		}
+	
 	}
 }

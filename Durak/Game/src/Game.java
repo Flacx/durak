@@ -134,7 +134,14 @@ public class Game {
 		System.out.println();
 	}
 
+	
+	
+	
+	
 	public int executeAttack(int attackingPlayer, boolean shifted) {
+		
+		
+		
 		int attackedPlayer = 0;
 		if (attackingPlayer == players.length - 1) {
 			attackedPlayer = 0;
@@ -145,21 +152,24 @@ public class Game {
 		boolean player1ok = false;
 		boolean player2ok = false;
 
-		System.out.println("Attacking Player: " + attackingPlayer + ". Your cards: ");
-		printCards(attackingPlayer);
-		System.out.print("> ");
-		Scanner in = new Scanner(System.in);
-		int chosenCard = -1;
-		String choice = null;
-		while (chosenCard < 1 || chosenCard > players[attackingPlayer].getCardCount()) {
-			choice = in.nextLine();
-			chosenCard = Integer.parseInt(choice);
+		if (!shifted) {
+			
+			System.out.println("Attacking Player: " + attackingPlayer + ". Your cards: ");
+			printCards(attackingPlayer);
+			System.out.print("> ");
+			Scanner in = new Scanner(System.in);
+			int chosenCard = -1;
+			String choice = null;
+			while (chosenCard < 1 || chosenCard > players[attackingPlayer].getCardCount()) {
+				choice = in.nextLine();
+				chosenCard = Integer.parseInt(choice);
+			}
+	
+			attackingCards[0] = (Card) players[attackingPlayer].getHand().get(chosenCard - 1);
+			int attackingIndex = 0;
+			// Muss gedeckt werden, es kann dazugelegt werden
+			// 3 phasen: p0 deckt. p1 wirft dazu. p2 wirft dazu - repeat
 		}
-
-		attackingCards[0] = (Card) players[attackingPlayer].getHand().get(chosenCard - 1);
-		int attackingIndex = 0;
-		// Muss gedeckt werden, es kann dazugelegt werden
-		// 3 phasen: p0 deckt. p1 wirft dazu. p2 wirft dazu - repeat
 		coverphase: while (!player1ok && !player2ok) {
 			printTable();
 			// p0 deckt. Szenarien: deckt und niemand wirft dazu runde vorbei.
@@ -182,6 +192,7 @@ public class Game {
 				// Springt aus der äußeren Schleife und beendet so den zug
 				break coverphase;
 			} else { // Decken
+				answerCard--;
 				// Nicht trump mit nicht trump decken
 				// atkKarte Farbe == coverKarte Farbe
 				// atkKarte Farbe != trumpffarbe
@@ -225,6 +236,8 @@ public class Game {
 									.get(answerCard);
 						} else {
 							// Nur vorzeigen
+							executeAttack(attackedPlayer, true);
+							break coverphase;
 
 						}
 					}
@@ -234,11 +247,121 @@ public class Game {
 			}
 
 			// Player 1 legt dazu
+			
+			System.out.println("Throw in cards? (y/n)");
+			printTable();
+			printCards(attackedPlayer+1);
+			String an = "";
+			while (!an.equals("y") || !an.equals("n")) {
+				an = in.nextLine();
+			}
+			
+			System.out.print("Card?\n> ");
+			boolean thrown = false;
+			// Askin for card to pick
+			while (!thrown) {
+				while (!(Integer.parseInt(an) < 0 || Integer.parseInt(an) > players[attackedPlayer-1].getCardCount())) {
+					an = in.nextLine();
+				}
+				
+				// Bei eingabe von 0 doch nicht dazuwerfen
+				if (Integer.parseInt(an) == 0) {
+					thrown = true;
+					break;
+				}
+				// checken ob die karte dazugeworfen werden kann
+				if (cardThrowable((Card) players[attackedPlayer-1].getHand().get(Integer.parseInt(an)), attackingCards)) {
+					// leg es zu den angriffskarten
+					attackingCards[slotsUsedInArray(attackingCards)] = (Card) players[attackedPlayer-1].getHand().get(Integer.parseInt(an));
+					
+					System.out.print("Throw another? (y/n)");
+					an = in.nextLine();
+					if (an.equals("n")) {
+						thrown = true;
+					}
+				}
+			}
+			thrown = false;
+			
+			
 		}
 
 		// Karten ziehen FALLS shifted = false ist
+		
+		if (!shifted) {
+			
+			 // ANGRIFFSSPIELER DRAW
+			if (players[attackingPlayer].getCardCount() < 5) {
+				if (staple.size() >= 5-players[attackingPlayer].getCardCount()) {
+					while (players[attackingPlayer].getCardCount() < 5) {
+						// draw
+						players[attackingPlayer].getHand().add(staple.pop());
+						players[attackingPlayer].shiftDownCards();
+					}
+				} else {
+					while (!staple.empty()) {
+						players[attackingPlayer].getHand().add(staple.pop());
+						players[attackingPlayer].shiftDownCards();
+					}
+				}
+			}
+			
+			// ANDERER ANGREIFER BEIM DAZULEGEN
+			if (players[attackedPlayer+1].getCardCount() < 5) {
+				if (staple.size() >= 5-players[attackedPlayer+1].getCardCount()) {
+					while (players[attackedPlayer+1].getCardCount() < 5) {
+						// draw
+						players[attackedPlayer+1].getHand().add(staple.pop());
+						players[attackedPlayer+1].shiftDownCards();
+					}
+				} else {
+					while (!staple.empty()) {
+						players[attackedPlayer+1].getHand().add(staple.pop());
+						players[attackedPlayer+1].shiftDownCards();
+					}
+				}
+			}
+			
+			// ANGEGRIFFENER SPIELER
+			if (players[attackedPlayer].getCardCount() < 5) {
+				if (staple.size() >= 5-players[attackedPlayer].getCardCount()) {
+					while (players[attackedPlayer].getCardCount() < 5) {
+						// draw
+						players[attackedPlayer].getHand().add(staple.pop());
+						players[attackedPlayer].shiftDownCards();
+					}
+				} else {
+					while (!staple.empty()) {
+						players[attackedPlayer].getHand().add(staple.pop());
+						players[attackedPlayer].shiftDownCards();
+					}
+				}
+			}
+			
+			
+		}
 		flushTable();
 		return nextPlayer;
 	}
+	
+	public boolean cardThrowable(Card c, Card[] cardArray) {
+		boolean throwable = false;
+		for (Card d : cardArray) {
+			if (d.getNumber() == c.getNumber()) {
+				throwable = true;
+			}
+		}
+		return throwable;
+	}
+
+	
+	public int slotsUsedInArray(Card[] c) {
+		int a = 0;
+		while (c[a] != null) {
+			a++;
+		}
+		return a;
+	}
+	
 
 }
