@@ -10,7 +10,7 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 public class test {
 
     public static void main(String[] args) {	
-
+    		
     }
 
 }

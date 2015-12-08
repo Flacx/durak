@@ -103,9 +103,15 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Prints all Playercards on the screen. When selecting one remember to subtract by 1.
+	 * @param player
+	 */
 	public void printCards(int player) {
 		for (int i = 0; i < 5; i++) {
-			System.out.println((i + 1) + ") " + players[player].getHand().get(i));
+			if (players[player].getHand().get(i) != null) {
+				System.out.println((i + 1) + ") " + players[player].getHand().get(i));
+			}
 		}
 	}
 
@@ -139,9 +145,7 @@ public class Game {
 	
 	
 	public int executeAttack(int attackingPlayer, boolean shifted) {
-		
-		
-		
+
 		int attackedPlayer = 0;
 		if (attackingPlayer == players.length - 1) {
 			attackedPlayer = 0;
@@ -247,8 +251,9 @@ public class Game {
 
 			// Player 1 legt dazu
 			System.out.println("Attacking Player");
-			System.out.println("Throw in cards? (y/n)");
+			System.out.println("Table:");
 			printTable();
+			System.out.println("Throw in cards? (y/n)");
 			int throwingPlayer = attackedPlayer-1;
 			printCards(throwingPlayer);
 			String an = "";
@@ -285,9 +290,10 @@ public class Game {
 			throwingPlayer = attackedPlayer+1;
 			
 			System.out.println("Neighbour Player");
-			System.out.println("Throw in cards? (y/n)");
 			
+			System.out.println("Table:");
 			printTable();
+			System.out.println("Throw in cards? (y/n)");
 			printCards(throwingPlayer);
 			an = "";
 			while (!an.equals("y") || !an.equals("n")) {
