@@ -152,24 +152,23 @@ public class Game {
 		boolean player1ok = false;
 		boolean player2ok = false;
 
-		if (!shifted) {
 			
-			System.out.println("Attacking Player: " + attackingPlayer + ". Your cards: ");
-			printCards(attackingPlayer);
-			System.out.print("> ");
-			Scanner in = new Scanner(System.in);
-			int chosenCard = -1;
-			String choice = null;
-			while (chosenCard < 1 || chosenCard > players[attackingPlayer].getCardCount()) {
-				choice = in.nextLine();
-				chosenCard = Integer.parseInt(choice);
-			}
+		System.out.println("Attacking Player: " + attackingPlayer + ". Your cards: ");
+		printCards(attackingPlayer);
+		System.out.print("> ");
+		Scanner in = new Scanner(System.in);
+		int chosenCard = -1;
+		String choice = null;
+		while (chosenCard < 1 || chosenCard > players[attackingPlayer].getCardCount()) {
+			choice = in.nextLine();
+			chosenCard = Integer.parseInt(choice);
+		}
 	
 			attackingCards[0] = (Card) players[attackingPlayer].getHand().get(chosenCard - 1);
 			int attackingIndex = 0;
 			// Muss gedeckt werden, es kann dazugelegt werden
 			// 3 phasen: p0 deckt. p1 wirft dazu. p2 wirft dazu - repeat
-		}
+		
 		coverphase: while (!player1ok && !player2ok) {
 			printTable();
 			// p0 deckt. Szenarien: deckt und niemand wirft dazu runde vorbei.
@@ -247,10 +246,11 @@ public class Game {
 			}
 
 			// Player 1 legt dazu
-			
+			System.out.println("Attacking Player");
 			System.out.println("Throw in cards? (y/n)");
 			printTable();
-			printCards(attackedPlayer+1);
+			int throwingPlayer = attackedPlayer-1;
+			printCards(throwingPlayer);
 			String an = "";
 			while (!an.equals("y") || !an.equals("n")) {
 				an = in.nextLine();
@@ -260,7 +260,7 @@ public class Game {
 			boolean thrown = false;
 			// Askin for card to pick
 			while (!thrown) {
-				while (!(Integer.parseInt(an) < 0 || Integer.parseInt(an) > players[attackedPlayer-1].getCardCount())) {
+				while (!(Integer.parseInt(an) < 0 || Integer.parseInt(an) > players[throwingPlayer].getCardCount())) {
 					an = in.nextLine();
 				}
 				
@@ -270,9 +270,9 @@ public class Game {
 					break;
 				}
 				// checken ob die karte dazugeworfen werden kann
-				if (cardThrowable((Card) players[attackedPlayer-1].getHand().get(Integer.parseInt(an)), attackingCards)) {
+				if (cardThrowable((Card) players[throwingPlayer].getHand().get(Integer.parseInt(an)), attackingCards)) {
 					// leg es zu den angriffskarten
-					attackingCards[slotsUsedInArray(attackingCards)] = (Card) players[attackedPlayer-1].getHand().get(Integer.parseInt(an));
+					attackingCards[slotsUsedInArray(attackingCards)] = (Card) players[throwingPlayer].getHand().get(Integer.parseInt(an));
 					
 					System.out.print("Throw another? (y/n)");
 					an = in.nextLine();
@@ -282,6 +282,44 @@ public class Game {
 				}
 			}
 			thrown = false;
+			throwingPlayer = attackedPlayer+1;
+			
+			System.out.println("Neighbour Player");
+			System.out.println("Throw in cards? (y/n)");
+			
+			printTable();
+			printCards(throwingPlayer);
+			an = "";
+			while (!an.equals("y") || !an.equals("n")) {
+				an = in.nextLine();
+			}
+			
+			System.out.print("Card?\n> ");
+			thrown = false;
+			// Askin for card to pick
+			while (!thrown) {
+				while (!(Integer.parseInt(an) < 0 || Integer.parseInt(an) > players[throwingPlayer].getCardCount())) {
+					an = in.nextLine();
+				}
+				
+				// Bei eingabe von 0 doch nicht dazuwerfen
+				if (Integer.parseInt(an) == 0) {
+					thrown = true;
+					break;
+				}
+				// checken ob die karte dazugeworfen werden kann
+				if (cardThrowable((Card) players[throwingPlayer].getHand().get(Integer.parseInt(an)), attackingCards)) {
+					// leg es zu den angriffskarten
+					attackingCards[slotsUsedInArray(attackingCards)] = (Card) players[throwingPlayer].getHand().get(Integer.parseInt(an));
+					
+					System.out.print("Throw another? (y/n)");
+					an = in.nextLine();
+					if (an.equals("n")) {
+						thrown = true;
+					}
+				}
+			}
+			
 			
 			
 		}
